@@ -6,7 +6,7 @@ const { successResponse, errorResponse } = require('../helpers/response');
 const getAll = async (req, res, next) => {
   try {
     const { jenis } = req.query;
-    const data = null
+    let data = null
 
     if (jenis) {
       if (jenis !== 'motor' && jenis !== 'mobil') {
