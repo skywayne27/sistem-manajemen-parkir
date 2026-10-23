@@ -7,9 +7,9 @@ const AreaParkir = {
 
     removeById: (areaId) => query.run('DELETE FROM AreaParkir WHERE id = ?', [areaId]),
 
-    updateById: (areaId, updatedFields) => query.run(
+    updateById: (areaId, updatedNama, updatedLokasi, updatedKapasitasMotor, updatedKapasitasMobil, updatedTarifMotor, updatedTarifMobil) => query.run(
         `UPDATE AreaParkir SET nama = ?, lokasi = ?, kapasitasMotor = ?, kapasitasMobil = ?, tarifPerJamMotor = ?, tarifPerJamMobil = ? WHERE id = ?`, 
-        [updatedFields, areaId]),
+        [updatedNama, updatedLokasi, updatedKapasitasMotor, updatedKapasitasMobil, updatedTarifMotor, updatedTarifMobil, areaId]),
 
     create: (nama, lokasi, kapasitasMotor, kapasitasMobil, tarifPerJamMotor, tarifPerJamMobil) => query.run(
       `INSERT INTO AreaParkir (nama, lokasi, kapasitasMotor, kapasitasMobil, tarifPerJamMotor, tarifPerJamMobil) 
