@@ -1,5 +1,6 @@
 const {query} = require('../config/db')
 const { AreaParkir } = require('../models/areaParkir.model');
+const { TransaksiParkir } = require('../models/transaksiParkir.model');
 const { successResponse, errorResponse } = require('../helpers/response');
 
 // Helper untuk menghitung slot tersedia pada satu area
@@ -155,7 +156,7 @@ const update = async (req, res, next) => {
     const updatedTarifMotor = tarifPerJamMotor !== undefined ? parseInt(tarifPerJamMotor, 10) : existing.tarifPerJamMotor;
     const updatedTarifMobil = tarifPerJamMobil !== undefined ? parseInt(tarifPerJamMobil, 10) : existing.tarifPerJamMobil;
 
-    await AreaParkir.updateById(id, [updatedNama, updatedLokasi, updatedKapasitasMotor, updatedKapasitasMobil, updatedTarifMotor, updatedTarifMobil])
+    await AreaParkir.updateById(id, updatedNama, updatedLokasi, updatedKapasitasMotor, updatedKapasitasMobil, updatedTarifMotor, updatedTarifMobil)
 
     const updated = await AreaParkir.getById(id);
     return successResponse(res, updated, 'Area parkir berhasil diperbarui');
@@ -182,7 +183,7 @@ const remove = async (req, res, next) => {
     }
 
     // Hapus juga riwayat transaksi yang berelasi jika ada (atau periksa constraints)
-    await query.run('DELETE FROM TransaksiParkir WHERE areaParkirId = ?', [id]);
+    await TransaksiParkir.removeByAreaParkirId(id)
     await AreaParkir.removeById(id);
 
     return successResponse(res, null, 'Area parkir berhasil dihapus');
