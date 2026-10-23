@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const dotenv = require('dotenv')
+const {notFoundHandler, errorHandler} = require("./middleware/errorHandler")
 
 dotenv.config()
 
@@ -28,6 +29,8 @@ app.use("/api/area-parkir", require("./routes/areaParkir.route"))
 app.use('/api/kendaraan', require('./routes/kendaraan.route'))
 app.use('/api/transaksi', require('./routes/transaksiParkir.route'))
 
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`\n=================================================`);
