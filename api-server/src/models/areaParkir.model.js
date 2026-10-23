@@ -5,14 +5,11 @@ const AreaParkir = {
 
     getById: (areaId) => query.get('SELECT * FROM AreaParkir WHERE id = ?', [areaId]),
 
-    removeById: (areaId) => {
-        query.run('DELETE FROM AreaParkir WHERE id = ?', [areaId]);
-    },
+    removeById: (areaId) => query.run('DELETE FROM AreaParkir WHERE id = ?', [areaId]),
 
-    updateById: (areaId, updatedFields) => {
-        query.run(`UPDATE AreaParkir SET nama = ?, lokasi = ?, kapasitasMotor = ?, kapasitasMobil = ?, tarifPerJamMotor = ?, tarifPerJamMobil = ? WHERE id = ?`, 
-        [updatedFields, areaId]);
-    },
+    updateById: (areaId, updatedFields) => query.run(
+        `UPDATE AreaParkir SET nama = ?, lokasi = ?, kapasitasMotor = ?, kapasitasMobil = ?, tarifPerJamMotor = ?, tarifPerJamMobil = ? WHERE id = ?`, 
+        [updatedFields, areaId]),
 
     create: (nama, lokasi, kapasitasMotor, kapasitasMobil, tarifPerJamMotor, tarifPerJamMobil) => query.run(
       `INSERT INTO AreaParkir (nama, lokasi, kapasitasMotor, kapasitasMobil, tarifPerJamMotor, tarifPerJamMobil) 
@@ -20,7 +17,7 @@ const AreaParkir = {
         [nama, lokasi, kapasitasMotor, kapasitasMobil, tarifPerJamMotor, tarifPerJamMobil]
     ),
 
-    countActiveMobilByAreaId: () => query.get(
+    countActiveMobilByAreaId: (areaId) => query.get(
         `SELECT COUNT(*) as count 
         FROM TransaksiParkir t
         JOIN Kendaraan k ON t.kendaraanId = k.id
@@ -28,7 +25,7 @@ const AreaParkir = {
         [areaId]
     ),
 
-    countActiveMotorByAreaId: () => query.get(
+    countActiveMotorByAreaId: (areaId) => query.get(
         `SELECT COUNT(*) as count 
         FROM TransaksiParkir t
         JOIN Kendaraan k ON t.kendaraanId = k.id
