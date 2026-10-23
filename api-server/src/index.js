@@ -24,6 +24,8 @@ app.get('/', (_, res) => {
   });
 });
 
+app.use("/api/area-parkir", require("./routes/areaParkir.route"))
+
 app.listen(PORT, () => {
     console.log(`\n=================================================`);
     console.log(`  API Server Sistem Manajemen Parkir Berjalan  `);
