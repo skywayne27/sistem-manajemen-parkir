@@ -25,6 +25,7 @@ app.get('/', (_, res) => {
 });
 
 app.use("/api/area-parkir", require("./routes/areaParkir.route"))
+app.use('/api/kendaraan', require('./routes/kendaraan.route'));
 
 app.listen(PORT, () => {
     console.log(`\n=================================================`);
