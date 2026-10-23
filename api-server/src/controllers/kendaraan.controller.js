@@ -1,5 +1,6 @@
 const { query } = require('../config/db');
 const { Kendaraan } = require('../models/kendaraan.model')
+const { TransaksiParkir } = require('../models/transaksiParkir.model')
 const { successResponse, errorResponse } = require('../helpers/response');
 
 // GET /api/kendaraan (mendukung filter query ?jenis=motor|mobil)
@@ -160,7 +161,7 @@ const remove = async (req, res, next) => {
     }
 
     // Hapus transaksi lama kendaraan ini
-    await query.run('DELETE FROM TransaksiParkir WHERE kendaraanId = ?', [id]);
+    await TransaksiParkir.removeByKendaraanId(id)
     await Kendaraan.remove(id)
 
     return successResponse(res, null, 'Kendaraan berhasil dihapus');
