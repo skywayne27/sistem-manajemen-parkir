@@ -1,122 +1,88 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import { Sidebar } from './components/Sidebar';
+import type { PageType } from './components/Sidebar';
+import { Header } from './components/Header';
+import { DashboardPage } from './pages/Dashboard';
+import { AreaParkirPage } from './pages/AreaParkir';
+import { KendaraanPage } from './pages/Kendaraan';
+import { TransaksiPage } from './pages/Transaksi';
+import { checkApiHealth } from './services/api';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
+  const [isApiConnected, setIsApiConnected] = useState<boolean>(false);
+
+  // Periksa koneksi API secara berkala
+  useEffect(() => {
+    let isMounted = true;
+    const verifyHealth = async () => {
+      const isOnline = await checkApiHealth();
+      if (isMounted) setIsApiConnected(isOnline);
+    };
+
+    verifyHealth();
+    const interval = setInterval(verifyHealth, 6000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Informasi header berdasarkan halaman aktif
+  const getHeaderInfo = () => {
+    switch (currentPage) {
+      case 'dashboard':
+        return {
+          title: 'Dashboard Overview',
+          subtitle: 'Statistik parkir dan transaksi aktif real-time',
+        };
+      case 'area-parkir':
+        return {
+          title: 'Manajemen Area Parkir',
+          subtitle: 'Pengaturan kapasitas, lokasi, dan tarif parkir per jam',
+        };
+      case 'kendaraan':
+        return {
+          title: 'Manajemen Kendaraan',
+          subtitle: 'Daftar registrasi motor & mobil yang terdaftar di sistem',
+        };
+      case 'transaksi':
+        return {
+          title: 'Transaksi Parkir',
+          subtitle: 'Monitoring kendaraan aktif dan seluruh riwayat transaksi',
+        };
+      default:
+        return {
+          title: 'Sistem Manajemen Parkir',
+          subtitle: 'Admin Management Web Client',
+        };
+    }
+  };
+
+  const headerInfo = getHeaderInfo();
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1 className="text-center">Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="flex min-h-screen bg-slate-50 text-slate-800 font-sans">
+      {/* Sidebar Navigasi */}
+      <Sidebar
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+        isApiConnected={isApiConnected}
+      />
 
-      <div className="ticks"></div>
+      {/* Konten Utama */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        <Header title={headerInfo.title} subtitle={headerInfo.subtitle} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        <main className="flex-1 pb-16">
+          {currentPage === 'dashboard' && <DashboardPage />}
+          {currentPage === 'area-parkir' && <AreaParkirPage />}
+          {currentPage === 'kendaraan' && <KendaraanPage />}
+          {currentPage === 'transaksi' && <TransaksiPage />}
+        </main>
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
