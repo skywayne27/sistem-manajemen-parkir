@@ -7,7 +7,7 @@
 
 ### 🌐 A. Web Client (Platform Web)
 * **Target Aktor**: Admin, Manajer Operasional, Operator Kantor
-* **Teknologi**: React.js, TypeScript, Vite
+* **Teknologi**: React.js, TypeScript, Vite, tailwindcss
 * **Tujuan**: Sentralisasi pengelolaan master data, monitoring performa operasional menyeluruh, dan analisis pendapatan parkir.
 * **Fitur Utama**: 
   1. Dashboard dan Analitik 
